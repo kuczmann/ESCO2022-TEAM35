@@ -43,6 +43,7 @@ license = "MIT"
 python = "3.9"
 typer = "*"
 digital-twin-distiller = '*'
+tika = '*'
 
 [tool.poetry.dev-dependencies]
 black = "*"

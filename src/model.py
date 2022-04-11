@@ -42,13 +42,13 @@ class TEAM35Model(BaseModel):
     def __init__(self, **kwargs):
         super(TEAM35Model, self).__init__(**kwargs)
 
-        # self._init_directories()
+        self._init_directories()
 
         # The default values of the example script are coming from the original team problem
         default_turns = []
         for i in range(10):
             default_turns.append(
-                Turn(current=3.0, r_0=i *1e-3 + 6.0 * 1e-3, z_0=i * 1.5 * 1e-3, width=1. * 1e-3, height=1.5 * 1e-3))
+                Turn(current=3.0, r_0=i * 1e-3 + 6.0 * 1e-3, z_0=i * 1.5 * 1e-3, width=1. * 1e-3, height=1.5 * 1e-3))
 
         # turn definition: it should be a list of dictionaries with the given information
         self.turn_data = kwargs.get('turns', default_turns)
@@ -88,15 +88,18 @@ class TEAM35Model(BaseModel):
 
     def add_postprocessing(self, Nx=10, Ny=10):
 
-        x = linspace(0., 5e-3, Nx)
-        y = linspace(0., 5e-3, Ny)
+        x = linspace(1e-6, 5e-3, Nx)
+        y = linspace(1e-6, 5e-3, Ny)
 
-        xx, yy = meshgrid(x, y)
+        xx, yy = meshgrid(x, y, sparse=False, indexing="xy")
 
         for i in range(Nx):
             for j in range(Ny):
                 eval_point = (xx[j, i], yy[j, i])
-                self.snapshot.add_postprocessing("point_value", eval_point, "B")
+                self.snapshot.add_postprocessing("point_value", eval_point, "Bz")
+                self.snapshot.add_postprocessing("point_value", eval_point, "Br")
+
+        self.snapshot.add_postprocessing("mesh_info", None, None)
 
     def build_geometry(self):
         """
