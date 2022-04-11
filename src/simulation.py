@@ -1,4 +1,4 @@
-from examples.fem_simulations.power_transformer.model import PowerTransformer
+from src.model import PowerTransformer
 
 from digital_twin_distiller.encapsulator import Encapsulator
 from digital_twin_distiller.modelpaths import ModelDir
@@ -10,7 +10,6 @@ from math import pi
 def execute_model(model: PowerTransformer):
     result = model(timeout=2000, cleanup=True)
     return result
-
 
 
 def get_main_parameters(simparams):
