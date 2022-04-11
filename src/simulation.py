@@ -1,4 +1,4 @@
-from src.model import PowerTransformer
+from src.model import TEAM35Model
 
 from digital_twin_distiller.encapsulator import Encapsulator
 from digital_twin_distiller.modelpaths import ModelDir
@@ -7,7 +7,7 @@ from digital_twin_distiller.simulationproject import sim
 from math import pi
 
 
-def execute_model(model: PowerTransformer):
+def execute_model(model: TEAM35Model):
     result = model(timeout=2000, cleanup=True)
     return result
 
@@ -56,7 +56,7 @@ def short_circuit_impedance(model, modelparams, simparams, miscparams):
     js = simparams["js"]
     jp = simparams["jp"]
 
-    m = PowerTransformer(js=js, jp=jp)
+    m = TEAM35Model(js=js, jp=jp)
     res = execute_model(m)
     # res = {"Energy": 256.5673046878133}
     Wm = res["Energy"]
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     ModelDir.set_base(__file__)
 
     # set the model for the simulation
-    sim.set_model(PowerTransformer)
+    sim.set_model(TEAM35Model)
 
     model = Encapsulator(sim)
     # model.build_docs()
