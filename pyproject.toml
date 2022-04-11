@@ -40,8 +40,9 @@ authors = [
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "3.9"
 typer = "*"
+digital-twin-distiller = '*'
 
 [tool.poetry.dev-dependencies]
 black = "*"
