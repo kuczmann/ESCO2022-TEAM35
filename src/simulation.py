@@ -4,45 +4,10 @@ from digital_twin_distiller.encapsulator import Encapsulator
 from digital_twin_distiller.modelpaths import ModelDir
 from digital_twin_distiller.simulationproject import sim
 
-from math import pi
-
 
 def execute_model(model: TEAM35Model):
     result = model(timeout=2000, cleanup=True)
     return result
-
-
-def get_main_parameters(simparams):
-    # base line voltage and the nominal power of the examined terminal
-    ub = simparams["ub"]
-    sb = simparams["sb"]
-    f = simparams["f"]
-    connection = simparams["con_fact"]
-
-    cf = 1.  # in case of delta connection
-    if str(connection).lower() is 'star':
-        cf = 3. ** 0.5
-
-    return ub, sb, f, cf
-
-
-def get_design_values(simparams):
-    """
-    Reads the design parameters and variables from the given json.
-    """
-
-    ff_in = simparams["ff_in"]
-    ff_ou = simparams["ff_ou"]
-    end_ins = simparams["end_ins"]
-    alpha = simparams["alpha"]
-    core_ins = simparams["core_ins"]
-    core_diam = simparams["core_diam"]
-    gap = simparams["gap"]
-    h_in = simparams["hin"]
-    t_in = simparams["tin"]
-    t_ou = simparams["tou"]
-    j_in = simparams["j_in"]
-    j_ou = simparams["j_ou"]
 
 
 @sim.register("short_circuit_impedance")
@@ -53,33 +18,15 @@ def short_circuit_impedance(model, modelparams, simparams, miscparams):
     The sci was normed on the impedance base, which calculated from the parameters of the LV terminal.
     """
 
-    js = simparams["js"]
-    jp = simparams["jp"]
+    # these parameters should be used to inject the model geometry
+    #js = simparams["js"]
+    #jp = simparams["jp"]
 
-    m = TEAM35Model(js=js, jp=jp)
+    m = TEAM35Model()
     res = execute_model(m)
     # res = {"Energy": 256.5673046878133}
     Wm = res["Energy"]
-    # Alv = modelparams['w2'] * modelparams['h2']
-    # Ahv = modelparams['w3'] * modelparams['h3']
 
-    # Ilv = js * Alv * ff
-    # Ihv = jp * Ahv * ff
-
-    # Xlv = 4 * pi * f * Wm / Ilv ** 2
-
-    # base impedance for the short circuit impedance calculation
-    ub = 6.9  # voltage --- kV base voltage
-    sb = 10.0  # nominal power  --- MVA
-    zb = ub ** 2. / sb  # impedance
-    f = 50
-    ib = sb * 1e3 / ub / 3. ** 0.5 / 3. ** 0.5
-
-    # -- calculating the impedance from the volume integrals --
-    L = 2 * Wm / ib ** 2.
-    sci = 2. * pi * f * L / zb * 100.
-
-    res["Xpu"] = Xlv * Ilv ** 2 / (2 * S) * 2
 
     return res
 
