@@ -3,31 +3,26 @@ from src.model import TEAM35Model
 from digital_twin_distiller.encapsulator import Encapsulator
 from digital_twin_distiller.modelpaths import ModelDir
 from digital_twin_distiller.simulationproject import sim
-
+from math import inf
 
 def execute_model(model: TEAM35Model):
     result = model(timeout=2000, cleanup=True)
     return result
 
-
 @sim.register("default")
-def calculate(model, modelparams, simparams, miscparams):
-    """
-    The FEM model gives back the stored magnetic energy in the transformer window, this quantity used to calculate the
-    short-circuit impedance (sci) of the power transformer.
-    The sci was normed on the impedance base, which calculated from the parameters of the LV terminal.
-    """
+def default_simulation(model, modelparams, simparams, miscparams):
+    x = simparams["r"] # the r params can define
+    B0 = simparams["B0"]
 
-    # these parameters should be used to inject the model geometry
-    # js = simparams["js"]
-    # jp = simparams["jp"]
+    model = TEAM35Model(rads = x)
+    Bz = execute_model(model)
 
-    m = TEAM35Model()
-    res = execute_model(m)
-    # res = {"Energy": 256.5673046878133}
-    #Wm = res["Energy"]
+    if Bz is not None:
+        f1 = max(map(lambda Bz_i: abs(Bz_i - B0), Bz))
+        return {"f1": f1}
+    else:
+        return {"f1": inf}
 
-    return res
 
 
 if __name__ == "__main__":

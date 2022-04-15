@@ -3,7 +3,7 @@ from operator import itemgetter
 
 from artap.algorithm_genetic import NSGAII
 from artap.problem import Problem
-from model import TEAM35Model
+from model import TEAM35Model, Turn
 
 
 class CoilOptimizationProblem(Problem):
@@ -11,16 +11,16 @@ class CoilOptimizationProblem(Problem):
         self.name = "Team35 Test Problem"
 
         self.parameters = [
-            {"name": "r0", "bounds": [5, 20]},
-            {"name": "r1", "bounds": [5, 20]},
-            {"name": "r2", "bounds": [5, 20]},
-            {"name": "r3", "bounds": [5, 20]},
-            {"name": "r4", "bounds": [5, 20]},
-            {"name": "r5", "bounds": [5, 20]},
-            {"name": "r6", "bounds": [5, 20]},
-            {"name": "r7", "bounds": [5, 20]},
-            {"name": "r8", "bounds": [5, 20]},
-            {"name": "r9", "bounds": [5, 20]},
+            {"name": "r0", "bounds": [5.0, 20.0]},
+            {"name": "r1", "bounds": [5.0, 20.0]},
+            {"name": "r2", "bounds": [5.0, 20.0]},
+            {"name": "r3", "bounds": [5.0, 20.0]},
+            {"name": "r4", "bounds": [5.0, 20.0]},
+            {"name": "r5", "bounds": [5.0, 20.0]},
+            {"name": "r6", "bounds": [5.0, 20.0]},
+            {"name": "r7", "bounds": [5.0, 20.0]},
+            {"name": "r8", "bounds": [5.0, 20.0]},
+            {"name": "r9", "bounds": [5.0, 20.0]},
         ]
 
         self.costs = [{"name": "f_1", "criteria": "minimize"}]
@@ -32,8 +32,15 @@ class CoilOptimizationProblem(Problem):
         print("called with", x1, end=" ")
         assert len(x) == 10
 
+        # in the original team problem, only the radii of the turns varied
+        # every other parameters coming from the team benchmark problem
+        coil_turns = []
+        for i, xi in enumerate(x):
+            coil_turns.append(
+                Turn(current=3.0, r_0=xi * 1e-3 + 6.0 * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
+
         try:
-            model = DistributedWinding(x)
+            model = TEAM35Model(turns=coil_turns)
             res = model(devmode=False, timeout=30, cleanup=True)
 
             # Br = map(op.itemgetter(2), res["Br"])
@@ -54,7 +61,7 @@ if __name__ == "__main__":
     # Perform the optimization iterating over 100 times on 100 individuals.
     problem = CoilOptimizationProblem()
     algorithm = NSGAII(problem)
-    algorithm.options["max_population_number"] = 2
+    algorithm.options["max_population_number"] = 3
     algorithm.options["max_population_size"] = 2
     try:
         algorithm.run()
