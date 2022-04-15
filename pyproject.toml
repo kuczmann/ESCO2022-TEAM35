@@ -35,7 +35,6 @@ authors = [
     "Blayne Chard <bchard@linz.govt.nz>",
     "Daniel Silk <dsilk@linz.govt.nz>",
     "Victor Engmark <vengmark@linz.govt.nz>",
-
 ]
 license = "MIT"
 
@@ -58,6 +57,9 @@ pylint = "*"
 pytest = "*"
 pytest-randomly = "*"
 typed-ast = "*"
+artap = "2020.8.28.1452"
+agrossuite = "~2020.9.15.64726"
+
 
 [tool.pylint.FORMAT]
 max-line-length = 127
