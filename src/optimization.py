@@ -25,6 +25,13 @@ class CoilOptimizationProblem(Problem):
 
         self.costs = [{"name": "f_1", "criteria": "minimize"}]
 
+    def b_absolute(self, res):
+        Br = map(itemgetter(2), res["Br"])
+        Bz = map(itemgetter(2), res["Bz"])
+
+        return map(lambda Bz_i, Br_i: (Bz_i ** 2. + Br_i ** 2.) ** 0.5, Bz, Br)
+
+
     def evaluate(self, individual):
         x = individual.vector
 
@@ -43,15 +50,8 @@ class CoilOptimizationProblem(Problem):
             model = TEAM35Model(turns=coil_turns)
             res = model(devmode=False, timeout=30, cleanup=True)
 
-            # Br = map(op.itemgetter(2), res["Br"])
-
-            Bz = res["Bz"]
-            Br = res["Br"]
-
-            Bz = map(itemgetter(2), res["Bz"])
-
             B0 = 2e-3
-            f1 = max(map(lambda Bz_i: abs(Bz_i - B0), Bz))
+            f1 = max(map(lambda Babsi: abs(Babsi - B0), self.b_absolute(res)))
 
             print("DONE")
             return [f1]
