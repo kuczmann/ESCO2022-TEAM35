@@ -39,19 +39,23 @@ class TEAM35Model(BaseModel):
        - The current in the turns can be changed from [-i .. +i].
     """
 
+    def default_turns(self):
+        default_turns = []
+        for i in range(10):
+            default_turns.append(
+                Turn(current=3.0, r_0=i * 1e-3 + 6.0 * 1e-3, z_0=i * 1.5 * 1e-3, width=1. * 1e-3, height=1.5 * 1e-3))
+
+        return default_turns
+
     def __init__(self, **kwargs):
         super(TEAM35Model, self).__init__(**kwargs)
 
         self._init_directories()
 
         # The default values of the example script are coming from the original team problem
-        default_turns = []
-        for i in range(10):
-            default_turns.append(
-                Turn(current=3.0, r_0=i * 1e-3 + 6.0 * 1e-3, z_0=i * 1.5 * 1e-3, width=1. * 1e-3, height=1.5 * 1e-3))
 
         # turn definition: it should be a list of dictionaries with the given information
-        self.turn_data = kwargs.get('turns', default_turns)
+        self.turn_data = kwargs.get('turns', self.default_turns)
         self.symmetrical_problem = kwargs.get('symmetry', True)
 
     def setup_solver(self):

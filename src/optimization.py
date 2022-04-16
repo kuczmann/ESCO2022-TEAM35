@@ -44,6 +44,10 @@ class CoilOptimizationProblem(Problem):
             res = model(devmode=False, timeout=30, cleanup=True)
 
             # Br = map(op.itemgetter(2), res["Br"])
+
+            Bz = res["Bz"]
+            Br = res["Br"]
+
             Bz = map(itemgetter(2), res["Bz"])
 
             B0 = 2e-3
@@ -61,8 +65,8 @@ if __name__ == "__main__":
     # Perform the optimization iterating over 100 times on 100 individuals.
     problem = CoilOptimizationProblem()
     algorithm = NSGAII(problem)
-    algorithm.options["max_population_number"] = 3
-    algorithm.options["max_population_size"] = 2
+    algorithm.options["max_population_number"] = 8
+    algorithm.options["max_population_size"] = 8
     try:
         algorithm.run()
         res = problem.individuals[-1]
