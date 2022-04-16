@@ -5,6 +5,8 @@ from artap.algorithm_genetic import NSGAII
 from artap.problem import Problem
 from model import TEAM35Model, Turn
 
+from metrics import f1_score
+
 
 class CoilOptimizationProblem(Problem):
     def set(self):
@@ -29,8 +31,11 @@ class CoilOptimizationProblem(Problem):
         Br = map(itemgetter(2), res["Br"])
         Bz = map(itemgetter(2), res["Bz"])
 
-        return map(lambda Bz_i, Br_i: (Bz_i ** 2. + Br_i ** 2.) ** 0.5, Bz, Br)
+        return list(map(lambda Bz_i, Br_i: (Bz_i ** 2. + Br_i ** 2.) ** 0.5, Bz, Br))
 
+    # def f1(self, b, b_0=2e-3):
+    #     f1 = max(map(lambda Babsi: abs(Babsi - B0), self.b_absolute(res)))
+    #     return
 
     def evaluate(self, individual):
         x = individual.vector
@@ -50,9 +55,9 @@ class CoilOptimizationProblem(Problem):
             model = TEAM35Model(turns=coil_turns)
             res = model(devmode=False, timeout=30, cleanup=True)
 
-            B0 = 2e-3
-            f1 = max(map(lambda Babsi: abs(Babsi - B0), self.b_absolute(res)))
-
+            bab = self.b_absolute(res)
+            f1 = f1_score(b=bab)[0]
+            print("f1:",f1)
             print("DONE")
             return [f1]
         except:
@@ -65,8 +70,8 @@ if __name__ == "__main__":
     # Perform the optimization iterating over 100 times on 100 individuals.
     problem = CoilOptimizationProblem()
     algorithm = NSGAII(problem)
-    algorithm.options["max_population_number"] = 8
-    algorithm.options["max_population_size"] = 8
+    algorithm.options["max_population_number"] = 2
+    algorithm.options["max_population_size"] = 2
     try:
         algorithm.run()
         res = problem.individuals[-1]
