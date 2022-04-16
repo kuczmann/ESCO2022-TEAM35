@@ -5,7 +5,7 @@ from artap.algorithm_genetic import NSGAII
 from artap.problem import Problem
 from model import TEAM35Model, Turn
 
-from metrics import f1_score
+from metrics import f1_score, f2_score
 
 
 class CoilOptimizationProblem(Problem):
@@ -59,7 +59,7 @@ class CoilOptimizationProblem(Problem):
             f1 = f1_score(b=bab)[0]
             print("f1:",f1)
             print("DONE")
-            return [f1]
+            return [f1, f2(coil_turns)]
         except:
             print("FAILED")
             return [inf]
