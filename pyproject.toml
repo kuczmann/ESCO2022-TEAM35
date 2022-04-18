@@ -59,10 +59,6 @@ pytest-randomly = "*"
 typed-ast = "*"
 artap = "2020.8.28.1452"
 agrossuite = "~2020.9.15.64726"
-bempp-cl = "*"
-numba = "*"
-meshio = "4.0.16"
-gmsh = "4.6.0"
 
 [tool.pylint.FORMAT]
 max-line-length = 127

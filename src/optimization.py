@@ -6,7 +6,8 @@ from artap.problem import Problem
 from model import TEAM35Model, Turn
 
 from metrics import f1_score, f2_losses
-
+from src.metrics import f2_masses
+from copy import copy
 
 class CoilOptimizationProblem(Problem):
     def set(self):
@@ -33,9 +34,10 @@ class CoilOptimizationProblem(Problem):
 
         return list(map(lambda Bz_i, Br_i: (Bz_i ** 2. + Br_i ** 2.) ** 0.5, Bz, Br))
 
-    # def f1(self, b, b_0=2e-3):
-    #     f1 = max(map(lambda Babsi: abs(Babsi - B0), self.b_absolute(res)))
-    #     return
+    def calc(self, coil_turns):
+        model = TEAM35Model(turns=coil_turns)
+        res = model(devmode=False, timeout=30, cleanup=True)
+        return res
 
     def evaluate(self, individual):
         x = individual.vector
@@ -49,18 +51,43 @@ class CoilOptimizationProblem(Problem):
         coil_turns = []
         for i, xi in enumerate(x):
             coil_turns.append(
-                Turn(current=3.0, r_0=xi * 1e-3 + 6.0 * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
+                Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
         try:
-            model = TEAM35Model(turns=coil_turns)
-            res = model(devmode=False, timeout=30, cleanup=True)
+            # f1 and the modified f2 and f3 measures needs only one evaluation
+            res = self.calc(coil_turns=coil_turns)
 
-            bab = self.b_absolute(res)
-            f1 = f1_score(b=bab)[0]
-            f2 = f2_losses(coil_turns)
-            print("f1:", f1, f2)
+            # - f1 - #
+            ba0 = self.b_absolute(res)  # the absolute values at the expected geometry
+            f1 = f1_score(b=ba0)[0]
+            f21 = f2_losses(coil_turns)
+            f22 = f2_masses(coil_turns)
+            print("f1:", f1, f21, f22)
+
+            # - f3 - #
+            # calculating the tolerance
+            # evalution of the f3 metric needs other calculations
+            # pos_turns = [c.r_0 + 0.5 * 1e-3 for c in coil_turns]
+            pos_turns = copy(coil_turns)
+            for turn in pos_turns:
+                turn.r_0 = turn.r_0 + 0.5 * 1e-3
+            model = TEAM35Model(turns=pos_turns)
+            res_pos = model(devmode=False, timeout=30, cleanup=True)
+            ba_min = self.b_absolute(res_pos)
+
+            #neg_turns = [c.r_0 - 0.5 * 1e-3 for c in coil_turns]
+            #model = TEAM35Model(turns=neg_turns)
+            #res_neg = model(devmode=False, timeout=30, cleanup=True)
+            #ba_plus = self.b_absolute(res_neg)
+
+            # from this point, it is similar like the f1 metric, the only difference is that we are looking for the
+            # difference from the original results not the expected ones.
+            #f1(ba_min, b)
+
+            #print(pos_turns)
+            #print(neg_turns)
             print("DONE")
-            return [f1, f2]
+            return [f1, f21, f22]
         except:
             print("FAILED")
             return [inf]
