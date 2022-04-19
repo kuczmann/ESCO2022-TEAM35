@@ -7,7 +7,9 @@ from model import TEAM35Model, Turn
 
 from metrics import f1_score, f2_losses
 from src.metrics import f2_masses
-from copy import copy
+from copy import copy, deepcopy
+from sklearn.metrics import max_error
+
 
 class CoilOptimizationProblem(Problem):
     def set(self):
@@ -64,30 +66,26 @@ class CoilOptimizationProblem(Problem):
             f22 = f2_masses(coil_turns)
             print("f1:", f1, f21, f22)
 
-            # - f3 - #
+            # - f3 -  overestimates the manufacturing error?
             # calculating the tolerance
             # evalution of the f3 metric needs other calculations
-            # pos_turns = [c.r_0 + 0.5 * 1e-3 for c in coil_turns]
-            pos_turns = copy(coil_turns)
-            for turn in pos_turns:
-                turn.r_0 = turn.r_0 + 0.5 * 1e-3
-            model = TEAM35Model(turns=pos_turns)
-            res_pos = model(devmode=False, timeout=30, cleanup=True)
-            ba_min = self.b_absolute(res_pos)
+            pos_turns = deepcopy(coil_turns)
+            neg_turns = deepcopy(coil_turns)
 
-            #neg_turns = [c.r_0 - 0.5 * 1e-3 for c in coil_turns]
-            #model = TEAM35Model(turns=neg_turns)
-            #res_neg = model(devmode=False, timeout=30, cleanup=True)
-            #ba_plus = self.b_absolute(res_neg)
+            for i in range(len(pos_turns)):
+                pos_turns[i].r_0 = pos_turns[i].r_0 + 0.5 * 1e-3
+                neg_turns[i].r_0 = neg_turns[i].r_0 - 0.5 * 1e-3
 
-            # from this point, it is similar like the f1 metric, the only difference is that we are looking for the
-            # difference from the original results not the expected ones.
-            #f1(ba_min, b)
+            res_pos = self.calc(coil_turns=pos_turns)
+            ba_pos = self.b_absolute(res_pos)
+            f3_plus = max_error(ba0, ba_pos)
 
-            #print(pos_turns)
-            #print(neg_turns)
+            res_neg = self.calc(coil_turns=neg_turns)
+            ba_neg = self.b_absolute(res_neg)
+            f3_minus = max_error(ba0, ba_neg)
+
             print("DONE")
-            return [f1, f21, f22]
+            return [f1, f21, f22, f3_minus+f3_plus]
         except:
             print("FAILED")
             return [inf]
