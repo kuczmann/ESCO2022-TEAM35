@@ -1,0 +1,6 @@
+ Max (B0-B)/B*,Min (B0-B)/B*
+"Worst Case","2.11","3.3"
+"Plackett-Burman","8.22","7.86"
+"Central Composite","12.25","10.51"
+"Box-Behnken","5.04","6.32"
+"NSGA – II","10.65","9.21"

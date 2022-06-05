@@ -229,18 +229,13 @@ def doe_ccf(n):
 
 
 if __name__ == "__main__":
-    import oapackage
+
     from numpy import array
 
-    run_size = 18
-    number_of_factors = 5
-    factor_levels = 3
-    strength = 5
+    number_of_factors = 10
 
-    arrayclass = oapackage.arraydata_t(factor_levels, run_size, strength, number_of_factors)
-    arr = array(arrayclass.create_root().getarray())
-    print(arr + 1)
-    # print(*doe_bbdesign(5, center=1), sep='\n')
-    # print(*fullfact([3]*4), sep='\n')
-    # print(*doe_pbdesign(4), sep='\n')
-    # print(*dore_ccf(4), sep='\n')
+    print(len(doe_bbdesign(10, center=1)), sep='\n')
+    #print(*fullfact([3]*4), sep='\n')
+    #print(len(doe_pbdesign(10)))
+    #print(*doe_pbdesign(10), sep='\n')
+    print(len(doe_ccf(10)), sep='\n')

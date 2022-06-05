@@ -11,6 +11,8 @@ from src.metrics import f2_masses
 from copy import copy, deepcopy
 from sklearn.metrics import max_error
 
+from doe import doe_ccf, doe_pbdesign, doe_bbdesign
+
 
 class CoilOptimizationProblem(Problem):
     def set(self):
@@ -102,27 +104,37 @@ class CoilOptimizationProblem(Problem):
 
 
 if __name__ == "__main__":
-    # Perform the optimization iterating over 100 times on 100 individuals.
-    # problem = CoilOptimizationProblem()
-    # algorithm = NSGAII(problem)
-    # algorithm.options["max_population_number"] = 15
-    # algorithm.options["max_population_size"] = 25
-    # try:
-    #    algorithm.run()
-    #    res = problem.individuals[-1]
-    #    print(res.vector)
-    #    print(res.costs)
-    # except KeyboardInterrupt:
-    #    pass
+    #Perform the optimization iterating over 100 times on 100 individuals.
+    problem = CoilOptimizationProblem()
+    algorithm = NSGAII(problem)
+    algorithm.options["max_population_number"] = 30
+    algorithm.options["max_population_size"] = 25
+    try:
+       algorithm.run()
+       res = problem.individuals[-1]
+       print(res.vector)
+       print(res.costs)
+    except KeyboardInterrupt:
+       pass
 
-    # single calculation
-    individual = Individual()
+    def single_calc():
+        # single calculation
+        individual = Individual()
+        individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
 
-    individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+        tolerances = doe_bbdesign(10)
 
-    full_factorial
+        errors = []
 
-    dummy = CoilOptimizationProblem()
-    result = dummy.evaluate(individual, only_f1=True)
+        for tol in tolerances:
+            individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+            for i in range(10):
+                individual.vector[i] = individual.vector[i] + tol[i] * 0.5
 
-    print(result)
+            dummy = CoilOptimizationProblem()
+            result = dummy.evaluate(individual, only_f1=True)
+            errors.append(result[0])
+        print(errors)
+        print(sum(errors) / len(errors))
+        print(min(errors))
+        print(max(errors))
