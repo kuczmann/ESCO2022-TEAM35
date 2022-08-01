@@ -24,7 +24,7 @@ profile = "black"
 
 [tool.mypy]
 show_error_codes = true
-strict = true
+strict = false
 
 [tool.poetry]
 name = "template-python-hello-world"
@@ -35,13 +35,15 @@ authors = [
     "Blayne Chard <bchard@linz.govt.nz>",
     "Daniel Silk <dsilk@linz.govt.nz>",
     "Victor Engmark <vengmark@linz.govt.nz>",
-
 ]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "3.9"
 typer = "*"
+digital-twin-distiller = '*'
+tika = '*'
+seaborn = "*"
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -56,6 +58,8 @@ pylint = "*"
 pytest = "*"
 pytest-randomly = "*"
 typed-ast = "*"
+artap = "2020.8.28.1452"
+agrossuite = "~2020.9.15.64726"
 
 [tool.pylint.FORMAT]
 max-line-length = 127
