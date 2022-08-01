@@ -43,6 +43,7 @@ python = "3.9"
 typer = "*"
 digital-twin-distiller = '*'
 tika = '*'
+seaborn = "*"
 
 [tool.poetry.dev-dependencies]
 black = "*"
