@@ -7,7 +7,7 @@ from digital_twin_distiller.platforms.femm import Femm
 from digital_twin_distiller.platforms.agros2d import Agros2D
 from digital_twin_distiller.snapshot import Snapshot
 from digital_twin_distiller.objects import Rectangle
-
+from digital_twin_distiller.geometry import Geometry
 from dataclasses import dataclass
 from copy import copy
 
@@ -75,28 +75,28 @@ class TEAM35Model(BaseModel):
         agros_metadata.problem_type = "magnetic"
         agros_metadata.coordinate_type = "axisymmetric"
         agros_metadata.analysis_type = "steadystate"
-        agros_metadata.unit = 1e-3
+        agros_metadata.unit = 1e0
         agros_metadata.nb_refinements = 0
-        agros_metadata.adaptivity = "hp-adaptivity"
+        agros_metadata.adaptivity = "disabled"
         agros_metadata.polyorder = 2
         agros_metadata.adaptivity_tol = 0.001
 
-        self.platform = Femm(femm_metadata)
-        # self.platform = Agros2D(agros_metadata)
+        # self.platform = Femm(femm_metadata)
+        self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
         a0 = DirichletBoundaryCondition("a0", field_type="magnetic", magnetic_potential=0.0)
-        n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic")
+        n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic", surface_current = 0.0)
         # Adding boundary conditions to the snapshot
         self.snapshot.add_boundary_condition(a0)
         self.snapshot.add_boundary_condition(n0)
 
     def define_materials(self):
         air = Material('air')
-        turn = Material('coil')
 
         for i, elem in enumerate(self.turn_data):
+            turn = Material('coil')
             turn.name = 'turn_{}'.format(i)
             turn.Je = elem.get_current_density()
             self.snapshot.add_material(turn)
@@ -130,6 +130,7 @@ class TEAM35Model(BaseModel):
         # symmetrycal
         out_rect = Rectangle(0, 0, width=60 * 1e-3, height=20 * 1e-3)
 
+
         self.geom.add_rectangle(out_rect)
 
         self.assign_material(1e-3, 1e-3, 'air')
@@ -141,7 +142,7 @@ class TEAM35Model(BaseModel):
         self.assign_boundary(*out_rect.d.mean(out_rect.a), 'a0')
 
         for i, turn in enumerate(self.turn_data):
-            rect = Rectangle(turn.r_0, turn.z_0, width=turn.width, height=turn.height)
+            rect = Rectangle(turn.r_0, turn.z_0+1e-5, width=turn.width, height=turn.height)
             self.geom.add_rectangle(rect)
             self.assign_material(*rect.cp, 'turn_{}'.format(i))
 
