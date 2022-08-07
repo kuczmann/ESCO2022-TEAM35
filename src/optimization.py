@@ -104,18 +104,19 @@ class CoilOptimizationProblem(Problem):
 
 
 if __name__ == "__main__":
-    #Perform the optimization iterating over 100 times on 100 individuals.
+    # Perform the optimization iterating over 100 times on 100 individuals.
     problem = CoilOptimizationProblem()
     algorithm = NSGAII(problem)
     algorithm.options["max_population_number"] = 30
     algorithm.options["max_population_size"] = 25
     try:
-       algorithm.run()
-       res = problem.individuals[-1]
-       print(res.vector)
-       print(res.costs)
+        algorithm.run()
+        res = problem.individuals[-1]
+        print(res.vector)
+        print(res.costs)
     except KeyboardInterrupt:
-       pass
+        pass
+
 
     def single_calc():
         # single calculation

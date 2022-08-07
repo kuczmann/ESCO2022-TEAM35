@@ -1,9 +1,10 @@
 from digital_twin_distiller.boundaries import DirichletBoundaryCondition, NeumannBoundaryCondition
 from digital_twin_distiller.material import Material
-from digital_twin_distiller.metadata import FemmMetadata
+from digital_twin_distiller.metadata import FemmMetadata, Agros2DMetadata
 from digital_twin_distiller.model import BaseModel
 from digital_twin_distiller.modelpaths import ModelDir
 from digital_twin_distiller.platforms.femm import Femm
+from digital_twin_distiller.platforms.agros2d import Agros2D
 from digital_twin_distiller.snapshot import Snapshot
 from digital_twin_distiller.objects import Rectangle
 
@@ -68,7 +69,20 @@ class TEAM35Model(BaseModel):
         femm_metadata.unit = "meters"
         femm_metadata.smartmesh = True
 
+        agros_metadata = Agros2DMetadata()
+        agros_metadata.file_script_name = self.file_solver_script
+        agros_metadata.file_metrics_name = self.file_solution
+        agros_metadata.problem_type = "magnetic"
+        agros_metadata.coordinate_type = "axisymmetric"
+        agros_metadata.analysis_type = "steadystate"
+        agros_metadata.unit = 1e-3
+        agros_metadata.nb_refinements = 0
+        agros_metadata.adaptivity = "hp-adaptivity"
+        agros_metadata.polyorder = 2
+        agros_metadata.adaptivity_tol = 0.001
+
         self.platform = Femm(femm_metadata)
+        # self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
@@ -76,8 +90,7 @@ class TEAM35Model(BaseModel):
         n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic")
         # Adding boundary conditions to the snapshot
         self.snapshot.add_boundary_condition(a0)
-        if self.symmetrical_problem:
-            self.snapshot.add_boundary_condition(n0)
+        self.snapshot.add_boundary_condition(n0)
 
     def define_materials(self):
         air = Material('air')
@@ -115,18 +128,17 @@ class TEAM35Model(BaseModel):
         """
 
         # symmetrycal
-        if self.symmetrical_problem:
-            out_rect = Rectangle(0, 0, width=60 * 1e-3, height=20 * 1e-3)
-        else:
-            out_rect = Rectangle(0, -20 * 1e-3, width=60 * 1e-3, height=40 * 1e-3)
+        out_rect = Rectangle(0, 0, width=60 * 1e-3, height=20 * 1e-3)
+
         self.geom.add_rectangle(out_rect)
 
         self.assign_material(1e-3, 1e-3, 'air')
 
-        self.assign_boundary(*out_rect.a.mean(out_rect.b), 'a0')
-        self.assign_boundary(*out_rect.d.mean(out_rect.c), 'a0')
-        self.assign_boundary(*out_rect.a.mean(out_rect.d), 'a0')
+        self.assign_boundary(*out_rect.a.mean(out_rect.b), 'symmetry')
+
         self.assign_boundary(*out_rect.b.mean(out_rect.c), 'a0')
+        self.assign_boundary(*out_rect.c.mean(out_rect.d), 'a0')
+        self.assign_boundary(*out_rect.d.mean(out_rect.a), 'a0')
 
         for i, turn in enumerate(self.turn_data):
             rect = Rectangle(turn.r_0, turn.z_0, width=turn.width, height=turn.height)
@@ -137,5 +149,13 @@ class TEAM35Model(BaseModel):
 
 
 if __name__ == "__main__":
-    m = TEAM35Model(exportname="dev")
+
+    x = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+
+    coil_turns = []
+    for i, xi in enumerate(x):
+        coil_turns.append(
+            Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
+
+    m = TEAM35Model(turns=coil_turns)
     m(cleanup=False, devmode=True)
