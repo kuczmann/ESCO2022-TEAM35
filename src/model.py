@@ -159,4 +159,4 @@ if __name__ == "__main__":
             Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
     m = TEAM35Model(turns=coil_turns)
-    m(cleanup=False, devmode=True)
+    m(cleanup=False, devmode=False)
