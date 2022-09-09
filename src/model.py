@@ -77,17 +77,17 @@ class TEAM35Model(BaseModel):
         agros_metadata.analysis_type = "steadystate"
         agros_metadata.unit = 1e0
         agros_metadata.nb_refinements = 1
-        agros_metadata.adaptivity = "enabled"
+        agros_metadata.adaptivity = "h-adaptivity"
         agros_metadata.polyorder = 2
         agros_metadata.adaptivity_tol = 0.001
 
         self.platform = Femm(femm_metadata)
-        #self.platform = Agros2D(agros_metadata)
+        # self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
         a0 = DirichletBoundaryCondition("a0", field_type="magnetic", magnetic_potential=0.0)
-        n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic", surface_current = 0.0)
+        n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic", surface_current=0.0)
         # Adding boundary conditions to the snapshot
         self.snapshot.add_boundary_condition(a0)
         self.snapshot.add_boundary_condition(n0)
@@ -130,7 +130,6 @@ class TEAM35Model(BaseModel):
         # symmetrycal
         out_rect = Rectangle(0, 0, width=40 * 1e-3, height=25 * 1e-3)
 
-
         self.geom.add_rectangle(out_rect)
 
         self.assign_material(1e-3, 1e-3, 'air')
@@ -142,7 +141,7 @@ class TEAM35Model(BaseModel):
         self.assign_boundary(*out_rect.d.mean(out_rect.a), 'a0')
 
         for i, turn in enumerate(self.turn_data):
-            rect = Rectangle(turn.r_0, turn.z_0+1e-5, width=turn.width, height=turn.height)
+            rect = Rectangle(turn.r_0, turn.z_0 + 1e-5, width=turn.width, height=turn.height)
             self.geom.add_rectangle(rect)
             self.assign_material(*rect.cp, 'turn_{}'.format(i))
 
