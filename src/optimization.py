@@ -104,9 +104,9 @@ class CoilOptimizationProblem(Problem):
 
 
 if __name__ == "__main__":
-    # # Perform the optimization iterating over 100 times on 100 individuals.
-    # problem = CoilOptimizationProblem()
-    # algorithm = NSGAII(problem)
+    # Perform the optimization iterating over 100 times on 100 individuals.
+    #problem = CoilOptimizationProblem()
+    #algorithm = NSGAII(problem)
     # algorithm.options["max_population_number"] = 30
     # algorithm.options["max_population_size"] = 25
     # try:
@@ -133,8 +133,8 @@ if __name__ == "__main__":
         individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
 
         # the error metric should be rewritten for other type of designs
-        tolerances = doe_pbdesign(10)
-
+        tolerances = doe_bbdesign(10)
+        print("Length of the tolerance analysis vector:",len(tolerances))
         errors = []
 
         for tol in tolerances:

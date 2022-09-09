@@ -76,13 +76,13 @@ class TEAM35Model(BaseModel):
         agros_metadata.coordinate_type = "axisymmetric"
         agros_metadata.analysis_type = "steadystate"
         agros_metadata.unit = 1e0
-        agros_metadata.nb_refinements = 1
+        agros_metadata.nb_refinements = 2
         agros_metadata.adaptivity = "h-adaptivity"
-        agros_metadata.polyorder = 2
+        agros_metadata.polyorder = 3
         agros_metadata.adaptivity_tol = 0.001
 
-        self.platform = Femm(femm_metadata)
-        # self.platform = Agros2D(agros_metadata)
+        #self.platform = Femm(femm_metadata)
+        self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
