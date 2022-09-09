@@ -76,8 +76,8 @@ class TEAM35Model(BaseModel):
         agros_metadata.coordinate_type = "axisymmetric"
         agros_metadata.analysis_type = "steadystate"
         agros_metadata.unit = 1e0
-        agros_metadata.nb_refinements = 0
-        agros_metadata.adaptivity = "disabled"
+        agros_metadata.nb_refinements = 1
+        agros_metadata.adaptivity = "enabled"
         agros_metadata.polyorder = 2
         agros_metadata.adaptivity_tol = 0.001
 
