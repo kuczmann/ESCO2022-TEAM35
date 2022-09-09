@@ -81,8 +81,8 @@ class TEAM35Model(BaseModel):
         agros_metadata.polyorder = 2
         agros_metadata.adaptivity_tol = 0.001
 
-        # self.platform = Femm(femm_metadata)
-        self.platform = Agros2D(agros_metadata)
+        self.platform = Femm(femm_metadata)
+        #self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
@@ -128,7 +128,7 @@ class TEAM35Model(BaseModel):
         """
 
         # symmetrycal
-        out_rect = Rectangle(0, 0, width=60 * 1e-3, height=20 * 1e-3)
+        out_rect = Rectangle(0, 0, width=40 * 1e-3, height=25 * 1e-3)
 
 
         self.geom.add_rectangle(out_rect)
