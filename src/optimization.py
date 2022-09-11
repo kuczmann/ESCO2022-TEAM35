@@ -103,10 +103,20 @@ class CoilOptimizationProblem(Problem):
             return [inf]
 
 
+def single_design():
+    """ Calculates the details for a selected single calculation """
+    individual = Individual()
+    individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+    dummy = CoilOptimizationProblem()
+    result = dummy.evaluate(individual, only_f1=True)
+
+    print("The F1 metric in the case of the base design:", result[0])
+
+
 if __name__ == "__main__":
     # Perform the optimization iterating over 100 times on 100 individuals.
-    #problem = CoilOptimizationProblem()
-    #algorithm = NSGAII(problem)
+    # problem = CoilOptimizationProblem()
+    # algorithm = NSGAII(problem)
     # algorithm.options["max_population_number"] = 30
     # algorithm.options["max_population_size"] = 25
     # try:
@@ -117,16 +127,6 @@ if __name__ == "__main__":
     # except KeyboardInterrupt:
     #     pass
 
-    def single_design():
-        # single calculation
-        individual = Individual()
-        individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
-        dummy = CoilOptimizationProblem()
-        result = dummy.evaluate(individual, only_f1=True)
-
-        print("The F1 metric in the case of the base design:", result[0])
-
-
     def single_design_with_tolerances():
         # single calculation
         individual = Individual()
@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
         # the error metric should be rewritten for other type of designs
         tolerances = doe_bbdesign(10)
-        print("Length of the tolerance analysis vector:",len(tolerances))
+        print("Length of the tolerance analysis vector:", len(tolerances))
         errors = []
 
         for tol in tolerances:
