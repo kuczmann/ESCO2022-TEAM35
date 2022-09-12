@@ -15,27 +15,6 @@ EXAMINED_CASE = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
 TRUE_F1 = 0.432 * 1e-3
 
 
-def halton(dim: int, nbpts: int):
-    h = full(nbpts * dim, nan)
-    p = full(nbpts, nan)
-    P = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
-    lognbpts = math.log(nbpts + 1)
-    for i in range(dim):
-        b = P[i]
-        n = int(math.ceil(lognbpts / math.log(b)))
-        for t in range(n):
-            p[t] = pow(b, -(t + 1))
-        for j in range(nbpts):
-            d = j + 1
-            sum_ = math.fmod(d, b) * p[0]
-            for t in range(1, n):
-                d = math.floor(d / b)
-                sum_ += math.fmod(d, b) * p[t]
-
-            h[j * dim + i] = sum_
-    return h.reshape(nbpts, dim)
-
-
 def original_tolerances(radii_vector: list, uniform_tolerance=0.5):
     maximum_design = []
     minimum_design = []
@@ -124,7 +103,12 @@ if __name__ == '__main__':
     # tolerance_cases = original_tolerances(radii_vector=EXAMINED_CASE)  # selects from the maximum and the minimum points
     # single_design_with_tolerances(tolerance_cases)
 
-    # print("UNIFORM distribution with MC:")
-    tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
+    #print("UNIFORM distribution with MC:")
+    #tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
     # single_design_with_tolerances(tolerance_cases)
-    repeat_tolerance_calculations(tolerance_cases)
+    #repeat_tolerance_calculations(tolerance_cases)
+
+    #print("UNIFORM DISTRIBUTION WITH HALTON SEQUENCE")
+    sequencer = ghalton.Halton(5)
+    points = sequencer.get(100)
+    print(points)
