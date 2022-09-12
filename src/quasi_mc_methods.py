@@ -5,7 +5,7 @@ import sobol_seq
 from joblib.numpy_pickle_utils import xrange
 from pyDOE import lhs
 from scipy.stats import norm
-from numpy import random, full, nan, average, std
+from numpy import random, full, nan, average, std, subtract, add
 import matplotlib.pyplot as plt
 
 from artap.individual import Individual
@@ -103,12 +103,14 @@ if __name__ == '__main__':
     # tolerance_cases = original_tolerances(radii_vector=EXAMINED_CASE)  # selects from the maximum and the minimum points
     # single_design_with_tolerances(tolerance_cases)
 
-    #print("UNIFORM distribution with MC:")
-    #tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
+    # print("UNIFORM distribution with MC:")
+    # tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
     # single_design_with_tolerances(tolerance_cases)
-    #repeat_tolerance_calculations(tolerance_cases)
+    # repeat_tolerance_calculations(tolerance_cases)
 
-    #print("UNIFORM DISTRIBUTION WITH HALTON SEQUENCE")
-    sequencer = ghalton.Halton(5)
-    points = sequencer.get(100)
-    print(points)
+    print("UNIFORM DISTRIBUTION WITH HALTON SEQUENCE")
+    sequencer = ghalton.Halton(16)
+    halton_points = sequencer.get(3)  # -> numbers between 0 - 1
+    offseted_points = add(halton_points, EXAMINED_CASE)
+    offseted_points = subtract(offseted_points, 0.5)
+    single_design_with_tolerances(offseted_points)
