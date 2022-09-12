@@ -5,7 +5,7 @@ import sobol_seq
 from joblib.numpy_pickle_utils import xrange
 from pyDOE import lhs
 from scipy.stats import norm
-from numpy import random, full, nan
+from numpy import random, full, nan, average, std
 import matplotlib.pyplot as plt
 
 from artap.individual import Individual
@@ -81,6 +81,29 @@ def single_design_with_tolerances(tolerance_vector: list, true_f1=TRUE_F1):
     return min(errors), max(errors), sum(errors) / len(errors), sum_diff / len(tolerance_vector)
 
 
+def repeat_tolerance_calculations(tolerance_vector, N: int = 10):
+    """
+    :param N: represents the number of the repetitions
+    """
+    overall_minima = []
+    overall_maxima = []
+    overall_avg = []
+
+    for i in range(N):
+        minima, maxima, avg, f1_distance = single_design_with_tolerances(tolerance_vector)
+        overall_minima.append(minima)
+        overall_maxima.append(maxima)
+        overall_avg.append(avg)
+
+    print("Minima (global)", min(overall_minima))
+    print("Average of the minimas", average(overall_minima))
+    print("Std of the minimas: ", std(overall_minima))
+    print("-----------------------------------------")
+    print("Maxima (global)", min(overall_maxima))
+    print("Average of the minimas", average(overall_minima))
+    print("Std of the minimas: ", std(overall_minima))
+
+
 #
 # def lhs_design():
 #     design = lhs(2, samples=100000)
@@ -101,6 +124,7 @@ if __name__ == '__main__':
     # tolerance_cases = original_tolerances(radii_vector=EXAMINED_CASE)  # selects from the maximum and the minimum points
     # single_design_with_tolerances(tolerance_cases)
 
-    print("UNIFORM distribution with MC:")
+    # print("UNIFORM distribution with MC:")
     tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
-    single_design_with_tolerances(tolerance_cases)
+    # single_design_with_tolerances(tolerance_cases)
+    repeat_tolerance_calculations(tolerance_cases)
