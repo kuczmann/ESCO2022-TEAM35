@@ -115,9 +115,16 @@ if __name__ == '__main__':
     # offseted_points = subtract(offseted_points, 0.5)
     # single_design_with_tolerances(offseted_points)
 
-    print("UNIFORM DISTRIBUTION WITH SOBOL SEQUENCE")
-    seq = sobol_seq.i4_sobol_generate(10, 16)
-    offseted_points = add(seq, EXAMINED_CASE)
-    offseted_points = subtract(seq, 0.5)
+    # print("UNIFORM DISTRIBUTION WITH SOBOL SEQUENCE")
+    # seq = sobol_seq.i4_sobol_generate(10, 16)
+    # offseted_points = add(seq, EXAMINED_CASE)
+    # offseted_points = subtract(offseted_points, 0.5)
 
-    print(offseted_points)
+    # single_design_with_tolerances(offseted_points)
+
+    print("UNIFORM DISTRIBUTION WITH LATIN HYPERCUBE SAMPLING")
+    seq = lhs(10, samples=5)
+    offseted_points = add(seq, EXAMINED_CASE)
+    offseted_points = subtract(offseted_points, 0.5)
+
+    single_design_with_tolerances(offseted_points)
