@@ -108,9 +108,23 @@ if __name__ == '__main__':
     # single_design_with_tolerances(tolerance_cases)
     # repeat_tolerance_calculations(tolerance_cases)
 
-    print("UNIFORM DISTRIBUTION WITH HALTON SEQUENCE")
-    sequencer = ghalton.Halton(16)
-    halton_points = sequencer.get(3)  # -> numbers between 0 - 1
-    offseted_points = add(halton_points, EXAMINED_CASE)
+    # print("UNIFORM DISTRIBUTION WITH HALTON SEQUENCE")
+    # sequencer = ghalton.Halton(16)
+    # halton_points = sequencer.get(3)  # -> numbers between 0 - 1
+    # offseted_points = add(halton_points, EXAMINED_CASE)
+    # offseted_points = subtract(offseted_points, 0.5)
+    # single_design_with_tolerances(offseted_points)
+
+    # print("UNIFORM DISTRIBUTION WITH SOBOL SEQUENCE")
+    # seq = sobol_seq.i4_sobol_generate(10, 16)
+    # offseted_points = add(seq, EXAMINED_CASE)
+    # offseted_points = subtract(offseted_points, 0.5)
+
+    # single_design_with_tolerances(offseted_points)
+
+    print("UNIFORM DISTRIBUTION WITH LATIN HYPERCUBE SAMPLING")
+    seq = lhs(10, samples=5)
+    offseted_points = add(seq, EXAMINED_CASE)
     offseted_points = subtract(offseted_points, 0.5)
+
     single_design_with_tolerances(offseted_points)
