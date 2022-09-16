@@ -57,6 +57,7 @@ class TEAM35Model(BaseModel):
 
         # turn definition: it should be a list of dictionaries with the given information
         self.turn_data = kwargs.get('turns', self.default_turns)
+
         self.symmetrical_problem = kwargs.get('symmetry', True)
 
     def setup_solver(self):

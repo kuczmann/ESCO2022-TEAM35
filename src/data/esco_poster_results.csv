@@ -1,4 +1,4 @@
- Max (B0-B)/B*,Min (B0-B)/B*
+ Max (B0-B*)/B*,Min (B0-B)/B*
 "Worst Case","2.11","3.3"
 "Plackett-Burman","8.22","7.86"
 "Central Composite","12.25","10.51"
