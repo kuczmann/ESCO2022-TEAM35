@@ -48,14 +48,14 @@ class CoilOptimizationProblem(Problem):
 
         x1 = [round(xi, 2) for xi in x]
         print("called with", x1, end=" ")
-        assert len(x) == 10
+        assert len(x) == 11
 
         # in the original team problem, only the radii of the turns varied
         # every other parameters coming from the team benchmark problem
         coil_turns = []
-        for i, xi in enumerate(x - 1):
+        for i in range(len(x1)-1):
             coil_turns.append(
-                Turn(current=x[-1], r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
+                Turn(current=x1[-1], r_0=x1[i] * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
         try:
             # f1 and the modified f2 and f3 measures needs only one evaluation
@@ -101,12 +101,13 @@ class CoilOptimizationProblem(Problem):
             print("FAILED")
             return [inf]
 
+
 if __name__ == "__main__":
     def coil_optimization():
         problem = CoilOptimizationProblem()
         algorithm = NSGAII(problem)
-        algorithm.options["max_population_number"] = 30
-        algorithm.options["max_population_size"] = 30
+        algorithm.options["max_population_number"] = 5
+        algorithm.options["max_population_size"] = 5
         try:
             algorithm.run()
             res = problem.individuals[-1]
@@ -114,5 +115,6 @@ if __name__ == "__main__":
             print(res.costs)
         except KeyboardInterrupt:
             pass
+
 
     coil_optimization()
