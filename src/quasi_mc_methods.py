@@ -5,7 +5,10 @@ import sobol_seq
 from joblib.numpy_pickle_utils import xrange
 from pyDOE import lhs
 from scipy.stats import norm
-from numpy import random, full, nan, average, std, subtract, add
+from numpy import random, full, nan, average, std, subtract, add, multiply
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from artap.individual import Individual
@@ -13,6 +16,23 @@ from src.optimization import CoilOptimizationProblem
 
 EXAMINED_CASE = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
 TRUE_F1 = 0.432 * 1e-3
+
+
+def box_muller_transform(U1, U2):
+    random.seed(521)
+    # U1 = np.random.uniform(size=1000)
+    # U2 = np.random.uniform(size=1000)
+    R = np.sqrt(-2 * np.log(U1))
+    # Theta = 2 * np.pi * U2
+    Theta = multiply(2 * np.pi, U2)
+    X = R * np.cos(Theta)
+    Y = R * np.sin(Theta)
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    temp = ax1.hist(X)
+    ax1.set_title("X")
+    temp = ax2.hist(Y)
+    ax2.set_title("Y")
+    plt.show()
 
 
 def original_tolerances(radii_vector: list, uniform_tolerance=0.5):
@@ -83,19 +103,22 @@ def repeat_tolerance_calculations(tolerance_vector, N: int = 10):
     print("Std of the minimas: ", std(overall_minima))
 
 
-#
-# def lhs_design():
-#     design = lhs(2, samples=100000)
-#     means = [6.5, 9.5]
-#     stdvs = [0.5 / 3, 0.5 / 3]
-#     for i in xrange(2):
-#         design[:, i] = norm(loc=means[i], scale=stdvs[i]).ppf(design[:, i])
-#     print(design)
-#
-#     fig, ax = plt.subplots(1, 1)
-#     ax.hist(design, density=True, histtype='stepfilled', alpha=0.5)
-#     ax.legend(loc='best', frameon=False)
-#     plt.show()
+def normalized_lhs_design():
+    design = lhs(10, samples=128)
+    # means = [0.0, 0.0]
+    means = EXAMINED_CASE
+    stdvs = 10 * [0.5 / 3]
+
+    print(means)
+    print(stdvs)
+
+    for i in xrange(2):
+        design[:, i] = norm(loc=means[i], scale=stdvs[i]).ppf(design[:, i])
+
+    fig, ax = plt.subplots(1, 1)
+    ax.hist(design, density=True, alpha=0.5)
+    ax.legend(loc='best', frameon=False)
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -122,9 +145,18 @@ if __name__ == '__main__':
 
     # single_design_with_tolerances(offseted_points)
 
-    print("UNIFORM DISTRIBUTION WITH LATIN HYPERCUBE SAMPLING")
-    seq = lhs(10, samples=5)
-    offseted_points = add(seq, EXAMINED_CASE)
-    offseted_points = subtract(offseted_points, 0.5)
+    # print("UNIFORM DISTRIBUTION WITH LATIN HYPERCUBE SAMPLING")
+    # seq = lhs(10, samples=5)
+    # offseted_points = add(seq, EXAMINED_CASE)
+    # offseted_points = subtract(offseted_points, 0.5)
 
+    # single_design_with_tolerances(offseted_points)
+
+    # Box Muller transform
+    # sequencer = ghalton.Halton(100)
+    # halton_points = sequencer.get(2)
+    # pts = sobol_seq.i4_sobol_generate(2,10)
+    # box_muller_transform(pts[0], pts[1])
+    # print - lhs design with gauss distribution
+    offseted_points = normalized_lhs_design()
     single_design_with_tolerances(offseted_points)
