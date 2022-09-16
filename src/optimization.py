@@ -31,7 +31,7 @@ class CoilOptimizationProblem(Problem):
             {"name": "r9", "bounds": [6.0, 7.0]},
         ]
 
-        self.costs = [{"name": "f_1", "criteria": "maximize"}]
+        self.costs = [{"name": "f_1", "criteria": "minimize"}]
 
     def b_absolute(self, res):
         Br = map(itemgetter(2), res["Br"])
@@ -44,7 +44,7 @@ class CoilOptimizationProblem(Problem):
         res = model(devmode=False, timeout=30, cleanup=True)
         return res
 
-    def evaluate(self, individual, only_f1=False):
+    def evaluate(self, individual, only_f1=True):
         x = individual.vector
 
         x1 = [round(xi, 2) for xi in x]
@@ -115,17 +115,19 @@ def single_design():
 
 if __name__ == "__main__":
     # Perform the optimization iterating over 100 times on 100 individuals.
-    # problem = CoilOptimizationProblem()
-    # algorithm = NSGAII(problem)
-    # algorithm.options["max_population_number"] = 30
-    # algorithm.options["max_population_size"] = 25
-    # try:
-    #     algorithm.run()
-    #     res = problem.individuals[-1]
-    #     print(res.vector)
-    #     print(res.costs)
-    # except KeyboardInterrupt:
-    #     pass
+
+    def coil_optimization():
+        problem = CoilOptimizationProblem()
+        algorithm = NSGAII(problem)
+        algorithm.options["max_population_number"] = 30
+        algorithm.options["max_population_size"] = 30
+        try:
+            algorithm.run()
+            res = problem.individuals[-1]
+            print(res.vector)
+            print(res.costs)
+        except KeyboardInterrupt:
+            pass
 
     def single_design_with_tolerances():
         # single calculation
@@ -133,7 +135,7 @@ if __name__ == "__main__":
         individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
 
         # the error metric should be rewritten for other type of designs
-        tolerances = doe_bbdesign(10)
+        tolerances = doe_ccf(10)
         print("Length of the tolerance analysis vector:", len(tolerances))
         errors = []
 
@@ -151,5 +153,6 @@ if __name__ == "__main__":
         print("maximum:", max(errors))
 
 
-    single_design()
-    single_design_with_tolerances()
+    #single_design()
+    #single_design_with_tolerances()
+    coil_optimization()
