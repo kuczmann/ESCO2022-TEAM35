@@ -103,10 +103,10 @@ if __name__ == '__main__':
     # tolerance_cases = original_tolerances(radii_vector=EXAMINED_CASE)  # selects from the maximum and the minimum points
     # single_design_with_tolerances(tolerance_cases)
 
-    # print("UNIFORM distribution with MC:")
-    # tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
-    # single_design_with_tolerances(tolerance_cases)
-    # repeat_tolerance_calculations(tolerance_cases)
+    print("UNIFORM distribution with MC:")
+    tolerance_cases = uniform_distribution_of_errors_simple_mc(radii_vector=EXAMINED_CASE)
+    single_design_with_tolerances(tolerance_cases)
+
 
     # print("UNIFORM DISTRIBUTION WITH HALTON SEQUENCE")
     # sequencer = ghalton.Halton(16)
@@ -115,16 +115,16 @@ if __name__ == '__main__':
     # offseted_points = subtract(offseted_points, 0.5)
     # single_design_with_tolerances(offseted_points)
 
-    # print("UNIFORM DISTRIBUTION WITH SOBOL SEQUENCE")
-    # seq = sobol_seq.i4_sobol_generate(10, 16)
-    # offseted_points = add(seq, EXAMINED_CASE)
-    # offseted_points = subtract(offseted_points, 0.5)
+    #print("UNIFORM DISTRIBUTION WITH SOBOL SEQUENCE")
+    #seq = sobol_seq.i4_sobol_generate(10, 16)
+    #offseted_points = add(seq, EXAMINED_CASE)
+    #offseted_points = subtract(offseted_points, 0.5)
 
-    # single_design_with_tolerances(offseted_points)
+    #single_design_with_tolerances(offseted_points)
 
-    print("UNIFORM DISTRIBUTION WITH LATIN HYPERCUBE SAMPLING")
-    seq = lhs(10, samples=5)
-    offseted_points = add(seq, EXAMINED_CASE)
-    offseted_points = subtract(offseted_points, 0.5)
+    #print("UNIFORM DISTRIBUTION WITH LATIN HYPERCUBE SAMPLING")
+    #seq = lhs(10, samples=16)
+    #offseted_points = add(seq, EXAMINED_CASE)
+    #offseted_points = subtract(offseted_points, 0.5)
 
-    single_design_with_tolerances(offseted_points)
+    #single_design_with_tolerances(offseted_points)
