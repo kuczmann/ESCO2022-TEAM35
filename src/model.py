@@ -82,8 +82,8 @@ class TEAM35Model(BaseModel):
         agros_metadata.polyorder = 3
         agros_metadata.adaptivity_tol = 0.001
 
-        #self.platform = Femm(femm_metadata)
-        self.platform = Agros2D(agros_metadata)
+        self.platform = Femm(femm_metadata)
+        #self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):

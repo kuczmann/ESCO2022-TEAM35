@@ -1,5 +1,6 @@
  Max{($B^*$-$B_0$)/$B_0$},Min{($B^*$-$B_0$)/$B_0$}
-"Original","4.63","3.47"
+"NSGA – II","20.14","19.68"
+"Monte Carlo - 512 samples","4.63","3.47"
 "Plackett-Burman","15.97","10.65"
 "Central Composite","21.06","20.14"
 "Box-Behnken","7.41","6.94"

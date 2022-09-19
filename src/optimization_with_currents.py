@@ -27,10 +27,10 @@ class CoilOptimizationProblem(Problem):
             {"name": "r7", "bounds": [6.0, 7.0]},
             {"name": "r8", "bounds": [6.0, 7.0]},
             {"name": "r9", "bounds": [6.0, 7.0]},
-            {"name": "i0", "bounds": [2.7, 3.3]}
+            {"name": "i0", "bounds": [2.95, 3.05]}
         ]
 
-        self.costs = [{"name": "f_1", "criteria": "minimize"}]
+        self.costs = [{"name": "f_1", "criteria": "maximize"}]
 
     def b_absolute(self, res):
         Br = map(itemgetter(2), res["Br"])
@@ -106,8 +106,8 @@ if __name__ == "__main__":
     def coil_optimization():
         problem = CoilOptimizationProblem()
         algorithm = NSGAII(problem)
-        algorithm.options["max_population_number"] = 5
-        algorithm.options["max_population_size"] = 5
+        algorithm.options["max_population_number"] = 30
+        algorithm.options["max_population_size"] = 30
         try:
             algorithm.run()
             res = problem.individuals[-1]

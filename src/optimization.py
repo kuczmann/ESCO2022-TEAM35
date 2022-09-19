@@ -129,13 +129,14 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             pass
 
+
     def single_design_with_tolerances():
         # single calculation
         individual = Individual()
         individual.vector = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
 
         # the error metric should be rewritten for other type of designs
-        tolerances = doe_ccf(10)
+        tolerances = doe_pbdesign(10)
         print("Length of the tolerance analysis vector:", len(tolerances))
         errors = []
 
@@ -153,6 +154,6 @@ if __name__ == "__main__":
         print("maximum:", max(errors))
 
 
-    #single_design()
-    #single_design_with_tolerances()
+    # single_design()
+    # single_design_with_tolerances()
     coil_optimization()

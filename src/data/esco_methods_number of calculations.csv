@@ -1,6 +1,6 @@
 , Nr of Calculations
-"Worst Case",3
+"TEAM35 Robustness Metric ($F_2$)",2
 "Plackett-Burman",12
 "Central Composite",1045
 "Box-Behnken",181
-"NSGA – II", 625
+"NSGA – II", 900
