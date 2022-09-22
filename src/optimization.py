@@ -113,6 +113,15 @@ def single_design():
     print("The F1 metric in the case of the base design:", result[0])
 
 
+def compare_with_reference():
+    individual = Individual()
+    individual.vector = 10 * [10.0]
+    dummy = CoilOptimizationProblem()
+    result = dummy.evaluate(individual, only_f1=False)
+    print("The reference metrics", result)
+
+
+
 if __name__ == "__main__":
     # Perform the optimization iterating over 100 times on 100 individuals.
 
@@ -156,4 +165,5 @@ if __name__ == "__main__":
 
     # single_design()
     # single_design_with_tolerances()
-    coil_optimization()
+    #coil_optimization()
+    compare_with_reference()

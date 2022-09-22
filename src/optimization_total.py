@@ -20,7 +20,10 @@ def single_design_with_doe_tolerances(individual: Individual(), curr_f1):
     tolerances = doe_pbdesign(10)
     errors = []
 
+    originals = individual.vector
+
     for tol in tolerances:
+        individual.vector = originals
         for i in range(10):
             individual.vector[i] = individual.vector[i] + tol[i] * 0.5
 
@@ -101,9 +104,9 @@ if __name__ == "__main__":
 
     problem = TotalOptimizationProblem()
     algorithm = NSGAII(problem)
-    algorithm.options["max_population_number"] = 50
-    algorithm.options["max_population_size"] = 50
-    algorithm.options['max_processes'] = 10
+    algorithm.options["max_population_number"] = 30
+    algorithm.options["max_population_size"] = 30
+    algorithm.options['max_processes'] = 5
     algorithm.run()
     # res = problem.individuals[-1]
     # print(res.vector)
@@ -111,14 +114,14 @@ if __name__ == "__main__":
     results = Results(problem)
 
     list_of_inds = results.problem.individuals
-    with open('individuals_pb.txt', 'w') as f:
+    with open('individuals_pb_corrected.txt', 'w') as f:
         for elem in list_of_inds:
             f.write(str(elem))
             f.write('\n')
 
     table = results.pareto_values()
 
-    with open('pareto_pb.txt', 'w') as f:
+    with open('pareto_pb_corrected.txt', 'w') as f:
         for elem in table:
             f.write("{},{} \n".format(elem[0], elem[1]))
     print(table)

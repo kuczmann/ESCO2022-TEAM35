@@ -151,8 +151,8 @@ class TEAM35Model(BaseModel):
 
 if __name__ == "__main__":
 
-    x = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
-
+    #x = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+    x = 10*[10.0]
     coil_turns = []
     for i, xi in enumerate(x):
         coil_turns.append(
