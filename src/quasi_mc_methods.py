@@ -103,22 +103,20 @@ def repeat_tolerance_calculations(tolerance_vector, N: int = 10):
     print("Std of the minimas: ", std(overall_minima))
 
 
-def normalized_lhs_design():
-    design = lhs(10, samples=128)
+def normalized_lhs_design(nr_dim=10, samples=128):
+    design = lhs(nr_dim, samples=samples)
     # means = [0.0, 0.0]
     means = EXAMINED_CASE
-    stdvs = 10 * [0.5 / 3]
+    stdvs = nr_dim * [0.5 / 3]
 
-    print(means)
-    print(stdvs)
-
-    for i in xrange(2):
+    for i in xrange(nr_dim):
         design[:, i] = norm(loc=means[i], scale=stdvs[i]).ppf(design[:, i])
 
-    fig, ax = plt.subplots(1, 1)
-    ax.hist(design, density=True, alpha=0.5)
-    ax.legend(loc='best', frameon=False)
-    plt.show()
+    # fig, ax = plt.subplots(1, 1)
+    # ax.hist(design, density=True, alpha=0.5)
+    # ax.legend(loc='best', frameon=False)
+    # plt.show()
+    return design
 
 
 if __name__ == '__main__':
@@ -158,5 +156,6 @@ if __name__ == '__main__':
     # pts = sobol_seq.i4_sobol_generate(2,10)
     # box_muller_transform(pts[0], pts[1])
     # print - lhs design with gauss distribution
+    #print(offseted_points)
     offseted_points = normalized_lhs_design()
     single_design_with_tolerances(offseted_points)
