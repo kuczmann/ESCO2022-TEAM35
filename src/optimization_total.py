@@ -14,16 +14,21 @@ from sklearn.metrics import max_error
 
 from doe import doe_ccf, doe_pbdesign, doe_bbdesign
 
+def min_max_design():
+    min = 10 * [-1]
+    max = 10 * [1]
+    zeros = 10 * [0]
+    return [min, zeros, max]
 
 def single_design_with_doe_tolerances(individual: Individual(), curr_f1):
     # the error metric should be rewritten for other type of designs
-    tolerances = doe_pbdesign(10)
+    tolerances = min_max_design() #doe_pbdesign(10)
     errors = []
 
-    originals = individual.vector
+    originals = copy(individual.vector)
 
     for tol in tolerances:
-        individual.vector = originals
+        individual.vector = copy(originals)
         for i in range(10):
             individual.vector[i] = individual.vector[i] + tol[i] * 0.5
 
@@ -104,9 +109,9 @@ if __name__ == "__main__":
 
     problem = TotalOptimizationProblem()
     algorithm = NSGAII(problem)
-    algorithm.options["max_population_number"] = 30
-    algorithm.options["max_population_size"] = 30
-    algorithm.options['max_processes'] = 5
+    algorithm.options["max_population_number"] = 50
+    algorithm.options["max_population_size"] = 50
+    algorithm.options['max_processes'] = 4
     algorithm.run()
     # res = problem.individuals[-1]
     # print(res.vector)
@@ -114,14 +119,14 @@ if __name__ == "__main__":
     results = Results(problem)
 
     list_of_inds = results.problem.individuals
-    with open('individuals_pb_corrected.txt', 'w') as f:
+    with open('individuals_min_max_fem_4.txt', 'w') as f:
         for elem in list_of_inds:
             f.write(str(elem))
             f.write('\n')
 
     table = results.pareto_values()
 
-    with open('pareto_pb_corrected.txt', 'w') as f:
+    with open('pareto_min_max_fem_4.txt', 'w') as f:
         for elem in table:
             f.write("{},{} \n".format(elem[0], elem[1]))
     print(table)

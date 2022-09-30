@@ -82,8 +82,8 @@ class TEAM35Model(BaseModel):
         agros_metadata.polyorder = 3
         agros_metadata.adaptivity_tol = 0.001
 
-        #self.platform = Femm(femm_metadata)
-        self.platform = Agros2D(agros_metadata)
+        self.platform = Femm(femm_metadata)
+        # self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
@@ -150,13 +150,15 @@ class TEAM35Model(BaseModel):
 
 
 if __name__ == "__main__":
-
-    #x = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
-    x = 10*[10.0]
+    x = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
+         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115]
+    # costs: [0.0005571569926753261, 1.7499837782319026e-05]
+    # x = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+    # x = 10*[10.0]
     coil_turns = []
     for i, xi in enumerate(x):
         coil_turns.append(
             Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
     m = TEAM35Model(turns=coil_turns)
-    m(cleanup=False, devmode=False)
+    m(cleanup=False, devmode=True)

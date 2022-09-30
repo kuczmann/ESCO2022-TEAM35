@@ -35,7 +35,7 @@ def box_muller_transform(U1, U2):
     plt.show()
 
 
-def original_tolerances(radii_vector: list, uniform_tolerance=0.5):
+def original_tolerances(radii_list, uniform_tolerance=0.5):
     maximum_design = []
     minimum_design = []
 
@@ -47,7 +47,7 @@ def original_tolerances(radii_vector: list, uniform_tolerance=0.5):
 
 
 # uniform distribution of the errors
-def uniform_distribution_of_errors_simple_mc(radii_vector: list, n=16, uniform_tolerance=0.5):
+def uniform_distribution_of_errors_simple_mc(radii_list, n=16, uniform_tolerance=0.5):
     """creates design in 16 points """
     designs = []
     for j in range(n):
@@ -59,7 +59,7 @@ def uniform_distribution_of_errors_simple_mc(radii_vector: list, n=16, uniform_t
     return designs
 
 
-def single_design_with_tolerances(tolerance_vector: list, true_f1=TRUE_F1):
+def single_design_with_tolerances(tolerance_list, true_f1=TRUE_F1):
     """ Calculates the robustnees of a single design, for different tolerance vectors. """
     errors = []
     sum_diff = 0.0
