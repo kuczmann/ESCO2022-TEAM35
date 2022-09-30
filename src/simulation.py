@@ -5,16 +5,18 @@ from digital_twin_distiller.modelpaths import ModelDir
 from digital_twin_distiller.simulationproject import sim
 from math import inf
 
+
 def execute_model(model: TEAM35Model):
     result = model(timeout=2000, cleanup=True)
     return result
 
+
 @sim.register("default")
 def default_simulation(model, modelparams, simparams, miscparams):
-    x = simparams["r"] # the r params can define
+    x = simparams["r"]  # the r params can define
     B0 = simparams["B0"]
 
-    model = TEAM35Model(rads = x)
+    model = TEAM35Model(rads=x)
     Bz = execute_model(model)
 
     if Bz is not None:
@@ -22,7 +24,6 @@ def default_simulation(model, modelparams, simparams, miscparams):
         return {"f1": f1}
     else:
         return {"f1": inf}
-
 
 
 if __name__ == "__main__":

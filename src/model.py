@@ -1,12 +1,13 @@
 from digital_twin_distiller.boundaries import DirichletBoundaryCondition, NeumannBoundaryCondition
 from digital_twin_distiller.material import Material
-from digital_twin_distiller.metadata import FemmMetadata
+from digital_twin_distiller.metadata import FemmMetadata, Agros2DMetadata
 from digital_twin_distiller.model import BaseModel
 from digital_twin_distiller.modelpaths import ModelDir
 from digital_twin_distiller.platforms.femm import Femm
+from digital_twin_distiller.platforms.agros2d import Agros2D
 from digital_twin_distiller.snapshot import Snapshot
 from digital_twin_distiller.objects import Rectangle
-
+from digital_twin_distiller.geometry import Geometry
 from dataclasses import dataclass
 from copy import copy
 
@@ -56,6 +57,7 @@ class TEAM35Model(BaseModel):
 
         # turn definition: it should be a list of dictionaries with the given information
         self.turn_data = kwargs.get('turns', self.default_turns)
+
         self.symmetrical_problem = kwargs.get('symmetry', True)
 
     def setup_solver(self):
@@ -68,22 +70,34 @@ class TEAM35Model(BaseModel):
         femm_metadata.unit = "meters"
         femm_metadata.smartmesh = True
 
+        agros_metadata = Agros2DMetadata()
+        agros_metadata.file_script_name = self.file_solver_script
+        agros_metadata.file_metrics_name = self.file_solution
+        agros_metadata.problem_type = "magnetic"
+        agros_metadata.coordinate_type = "axisymmetric"
+        agros_metadata.analysis_type = "steadystate"
+        agros_metadata.unit = 1e0
+        agros_metadata.nb_refinements = 2
+        agros_metadata.adaptivity = "h-adaptivity"
+        agros_metadata.polyorder = 3
+        agros_metadata.adaptivity_tol = 0.001
+
         self.platform = Femm(femm_metadata)
+        # self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
         a0 = DirichletBoundaryCondition("a0", field_type="magnetic", magnetic_potential=0.0)
-        n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic")
+        n0 = NeumannBoundaryCondition("symmetry", field_type="magnetic", surface_current=0.0)
         # Adding boundary conditions to the snapshot
         self.snapshot.add_boundary_condition(a0)
-        if self.symmetrical_problem:
-            self.snapshot.add_boundary_condition(n0)
+        self.snapshot.add_boundary_condition(n0)
 
     def define_materials(self):
         air = Material('air')
-        turn = Material('coil')
 
         for i, elem in enumerate(self.turn_data):
+            turn = Material('coil')
             turn.name = 'turn_{}'.format(i)
             turn.Je = elem.get_current_density()
             self.snapshot.add_material(turn)
@@ -115,21 +129,20 @@ class TEAM35Model(BaseModel):
         """
 
         # symmetrycal
-        if self.symmetrical_problem:
-            out_rect = Rectangle(0, 0, width=60 * 1e-3, height=20 * 1e-3)
-        else:
-            out_rect = Rectangle(0, -20 * 1e-3, width=60 * 1e-3, height=40 * 1e-3)
+        out_rect = Rectangle(0, 0, width=40 * 1e-3, height=25 * 1e-3)
+
         self.geom.add_rectangle(out_rect)
 
         self.assign_material(1e-3, 1e-3, 'air')
 
-        self.assign_boundary(*out_rect.a.mean(out_rect.b), 'a0')
-        self.assign_boundary(*out_rect.d.mean(out_rect.c), 'a0')
-        self.assign_boundary(*out_rect.a.mean(out_rect.d), 'a0')
+        self.assign_boundary(*out_rect.a.mean(out_rect.b), 'symmetry')
+
         self.assign_boundary(*out_rect.b.mean(out_rect.c), 'a0')
+        self.assign_boundary(*out_rect.c.mean(out_rect.d), 'a0')
+        self.assign_boundary(*out_rect.d.mean(out_rect.a), 'a0')
 
         for i, turn in enumerate(self.turn_data):
-            rect = Rectangle(turn.r_0, turn.z_0, width=turn.width, height=turn.height)
+            rect = Rectangle(turn.r_0, turn.z_0 + 1e-5, width=turn.width, height=turn.height)
             self.geom.add_rectangle(rect)
             self.assign_material(*rect.cp, 'turn_{}'.format(i))
 
@@ -137,5 +150,15 @@ class TEAM35Model(BaseModel):
 
 
 if __name__ == "__main__":
-    m = TEAM35Model(exportname="dev")
+    x = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
+         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115]
+    # costs: [0.0005571569926753261, 1.7499837782319026e-05]
+    # x = [13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]
+    # x = 10*[10.0]
+    coil_turns = []
+    for i, xi in enumerate(x):
+        coil_turns.append(
+            Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
+
+    m = TEAM35Model(turns=coil_turns)
     m(cleanup=False, devmode=True)

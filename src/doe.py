@@ -234,8 +234,9 @@ if __name__ == "__main__":
 
     number_of_factors = 10
 
-    print(len(doe_bbdesign(10, center=1)), sep='\n')
+    #print(len(doe_bbdesign(10, center=1)), sep='\n')
     #print(*fullfact([3]*4), sep='\n')
     #print(len(doe_pbdesign(10)))
-    #print(*doe_pbdesign(10), sep='\n')
-    print(len(doe_ccf(10)), sep='\n')
+    print(*doe_bbdesign(3), sep='\n')
+    print(len(doe_bbdesign(3)))
+    #print(len(doe_ccf(10)), sep='\n')

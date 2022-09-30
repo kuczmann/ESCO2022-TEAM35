@@ -11,8 +11,6 @@ from src.metrics import f2_masses
 from copy import copy, deepcopy
 from sklearn.metrics import max_error
 
-from doe import doe_ccf, doe_pbdesign, doe_bbdesign
-
 
 class CoilOptimizationProblem(Problem):
     def set(self):
@@ -29,9 +27,10 @@ class CoilOptimizationProblem(Problem):
             {"name": "r7", "bounds": [6.0, 7.0]},
             {"name": "r8", "bounds": [6.0, 7.0]},
             {"name": "r9", "bounds": [6.0, 7.0]},
+            {"name": "i0", "bounds": [2.95, 3.05]}
         ]
 
-        self.costs = [{"name": "f_1", "criteria": "minimize"}]
+        self.costs = [{"name": "f_1", "criteria": "maximize"}]
 
     def b_absolute(self, res):
         Br = map(itemgetter(2), res["Br"])
@@ -49,14 +48,14 @@ class CoilOptimizationProblem(Problem):
 
         x1 = [round(xi, 2) for xi in x]
         print("called with", x1, end=" ")
-        assert len(x) == 10
+        assert len(x) == 11
 
         # in the original team problem, only the radii of the turns varied
         # every other parameters coming from the team benchmark problem
         coil_turns = []
-        for i, xi in enumerate(x):
+        for i in range(len(x1)-1):
             coil_turns.append(
-                Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
+                Turn(current=x1[-1], r_0=x1[i] * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
         try:
             # f1 and the modified f2 and f3 measures needs only one evaluation
@@ -103,27 +102,7 @@ class CoilOptimizationProblem(Problem):
             return [inf]
 
 
-def single_design(x=[13.5, 12.5, 10.5, 6.5, 8.5, 7.5, 6.5, 6.5, 6.5, 6.5]):
-    """ Calculates the details for a selected single calculation """
-    individual = Individual()
-    individual.vector = x
-    dummy = CoilOptimizationProblem()
-    result = dummy.evaluate(individual, only_f1=True)
-
-    print("The F1 metric in the case of the base design:", result[0])
-
-
-def compare_with_reference():
-    individual = Individual()
-    individual.vector = 10 * [10.0]
-    dummy = CoilOptimizationProblem()
-    result = dummy.evaluate(individual, only_f1=False)
-    print("The reference metrics", result)
-
-
 if __name__ == "__main__":
-    # Perform the optimization iterating over 100 times on 100 individuals.
-
     def coil_optimization():
         problem = CoilOptimizationProblem()
         algorithm = NSGAII(problem)
@@ -138,37 +117,4 @@ if __name__ == "__main__":
             pass
 
 
-    def single_design_with_tolerances():
-        # single calculation
-        individual = Individual()
-        individual.vector = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
-         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115]
-
-        # the error metric should be rewritten for other type of designs
-        tolerances = doe_pbdesign(10)
-        print("Length of the tolerance analysis vector:", len(tolerances))
-        errors = []
-
-        for tol in tolerances:
-            individual.vector = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
-         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115]
-            for i in range(10):
-                individual.vector[i] = individual.vector[i] + tol[i] * 0.5
-
-            dummy = CoilOptimizationProblem()
-            result = dummy.evaluate(individual, only_f1=True)
-            errors.append(result[0])
-        print(errors)
-        print("average of the errors: ", sum(errors) / len(errors))
-        print("minimum:", min(errors))
-        print("maximum:", max(errors))
-
-
-    single_design(
-        x=[11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
-         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115])
-
-
-    #single_design_with_tolerances()
-    # coil_optimization()
-    # compare_with_reference()
+    coil_optimization()

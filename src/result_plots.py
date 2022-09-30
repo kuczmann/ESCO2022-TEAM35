@@ -132,6 +132,6 @@ def ccf_hysteresis():
 
 
 if __name__ == '__main__':
-    #final_results()
+    final_results()
     #total_calculations()
-    ccf_hysteresis()
+    #ccf_hysteresis()

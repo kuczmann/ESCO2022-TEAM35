@@ -39,9 +39,9 @@ authors = [
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.9"
+python = "3.9.6"
 typer = "*"
-digital-twin-distiller = '*'
+digital-twin-distiller = '2022.3'
 tika = '*'
 seaborn = "*"
 
@@ -60,6 +60,9 @@ pytest-randomly = "*"
 typed-ast = "*"
 artap = "2020.8.28.1452"
 agrossuite = "~2020.9.15.64726"
+sobol_seq = "*"
+ghalton = "*"
+pyDOE = "*"
 
 [tool.pylint.FORMAT]
 max-line-length = 127
