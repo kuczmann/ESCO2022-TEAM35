@@ -122,8 +122,7 @@ def compare_with_reference():
 
 
 if __name__ == "__main__":
-    # Perform the optimization iterating over 100 times on 100 individuals.
-
+    # single design with tolerances function can be used to recalculate the
     def coil_optimization():
         problem = CoilOptimizationProblem()
         algorithm = NSGAII(problem)
@@ -141,8 +140,10 @@ if __name__ == "__main__":
     def single_design_with_tolerances():
         # single calculation
         individual = Individual()
-        individual.vector = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
-         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115]
+        individual.vector = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898,
+                             9.8144883605959,
+                             15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248,
+                             12.97707670542115]
 
         # the error metric should be rewritten for other type of designs
         tolerances = doe_pbdesign(10)
@@ -150,8 +151,10 @@ if __name__ == "__main__":
         errors = []
 
         for tol in tolerances:
-            individual.vector = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
-         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115]
+            individual.vector = [11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898,
+                                 9.8144883605959,
+                                 15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248,
+                                 12.97707670542115]
             for i in range(10):
                 individual.vector[i] = individual.vector[i] + tol[i] * 0.5
 
@@ -166,9 +169,8 @@ if __name__ == "__main__":
 
     single_design(
         x=[11.24015721257606, 9.419703581319569, 9.152775145106448, 10.86928351011898, 9.8144883605959,
-         15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115])
+           15.806608636733477, 10.546726933428113, 7.632789199974747, 12.381184563574248, 12.97707670542115])
 
-
-    #single_design_with_tolerances()
-    # coil_optimization()
+    # single_design_with_tolerances()
+    # coil_optimization() - used for the nsga-ii search of the optimum for the given coils.
     # compare_with_reference()

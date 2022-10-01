@@ -261,13 +261,9 @@ df = pd.DataFrame(agros_min_max,
                   columns=['$r_1$', '$r_2$', '$r_3$', '$r_4$', '$r_5$', '$r_6$', '$r_7$', '$r_8$', '$r_9$', '$r_{10}$'])
 # Plot our violins.
 sns.boxenplot(data = df, k_depth="trustworthy")
-#sns.violinplot(data=df, inner=None, linewidth=1, color='#DDDDDD',
-#               saturation=2)
 sns.stripplot(data=df,
               jitter=True, linewidth=1)
 
-## Rotate the x-axis labels and remove the plot border on the left.
-#_ = plt.xticks(rotation=45, ha='right')
 sns.despine(left=True)
 plt.grid(visible=True)
 plt.ylabel(r'Radii [mm]', fontsize=12)

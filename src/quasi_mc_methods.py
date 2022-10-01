@@ -39,7 +39,7 @@ def original_tolerances(radii_list, uniform_tolerance=0.5):
     maximum_design = []
     minimum_design = []
 
-    for item in radii_vector:
+    for item in radii_list:
         maximum_design.append(item + uniform_tolerance)
         minimum_design.append(item - uniform_tolerance)
 
@@ -64,7 +64,7 @@ def single_design_with_tolerances(tolerance_list, true_f1=TRUE_F1):
     errors = []
     sum_diff = 0.0
     individual = Individual()
-    for case in tolerance_vector:
+    for case in tolerance_list:
         individual.vector = copy(case)
         dummy = CoilOptimizationProblem()
         result = dummy.evaluate(individual, only_f1=True)
@@ -120,6 +120,9 @@ def normalized_lhs_design(nr_dim=10, samples=128):
 
 
 if __name__ == '__main__':
+    """
+    If you would like to run the appropriate calculation, you have to only comment out the selected line.
+    """
     # print("Original MIN and MAX postion calculations:")
     # tolerance_cases = original_tolerances(radii_vector=EXAMINED_CASE)  # selects from the maximum and the minimum points
     # single_design_with_tolerances(tolerance_cases)
@@ -156,6 +159,6 @@ if __name__ == '__main__':
     # pts = sobol_seq.i4_sobol_generate(2,10)
     # box_muller_transform(pts[0], pts[1])
     # print - lhs design with gauss distribution
-    #print(offseted_points)
+    # print(offseted_points)
     offseted_points = normalized_lhs_design()
     single_design_with_tolerances(offseted_points)

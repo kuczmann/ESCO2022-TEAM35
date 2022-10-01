@@ -11,6 +11,8 @@ from src.metrics import f2_masses
 from copy import copy, deepcopy
 from sklearn.metrics import max_error
 
+"""This file is not part of this paper. """
+
 
 class CoilOptimizationProblem(Problem):
     def set(self):
@@ -53,7 +55,7 @@ class CoilOptimizationProblem(Problem):
         # in the original team problem, only the radii of the turns varied
         # every other parameters coming from the team benchmark problem
         coil_turns = []
-        for i in range(len(x1)-1):
+        for i in range(len(x1) - 1):
             coil_turns.append(
                 Turn(current=x1[-1], r_0=x1[i] * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
