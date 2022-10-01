@@ -14,15 +14,17 @@ from sklearn.metrics import max_error
 
 from doe import doe_ccf, doe_pbdesign, doe_bbdesign
 
+
 def min_max_design():
     min = 10 * [-1]
     max = 10 * [1]
     zeros = 10 * [0]
     return [min, zeros, max]
 
+
 def single_design_with_doe_tolerances(individual: Individual(), curr_f1):
     # the error metric should be rewritten for other type of designs
-    tolerances = min_max_design() #doe_pbdesign(10)
+    tolerances = min_max_design()  # doe_pbdesign(10)
     errors = []
 
     originals = copy(individual.vector)
