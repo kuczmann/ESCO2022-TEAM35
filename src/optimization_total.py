@@ -72,7 +72,7 @@ class TotalOptimizationProblem(Problem):
 
     def calc(self, coil_turns):
         model = TEAM35Model(turns=coil_turns)
-        res = model(devmode=False, timeout=30, cleanup=True)
+        res = model(devmode=False, timeout=3, cleanup=True)
         return res
 
     def evaluate(self, individual):
@@ -109,9 +109,9 @@ if __name__ == "__main__":
 
     problem = TotalOptimizationProblem()
     algorithm = NSGAII(problem)
-    algorithm.options["max_population_number"] = 50
-    algorithm.options["max_population_size"] = 50
-    algorithm.options['max_processes'] = 4
+    algorithm.options["max_population_number"] = 60
+    algorithm.options["max_population_size"] = 60
+    algorithm.options['max_processes'] = 8
     algorithm.run()
     # res = problem.individuals[-1]
     # print(res.vector)
@@ -119,14 +119,14 @@ if __name__ == "__main__":
     results = Results(problem)
 
     list_of_inds = results.problem.individuals
-    with open('individuals_min_max_fem_4.txt', 'w') as f:
+    with open('individuals_rev1.txt', 'w') as f:
         for elem in list_of_inds:
             f.write(str(elem))
             f.write('\n')
 
     table = results.pareto_values()
 
-    with open('pareto_min_max_fem_4.txt', 'w') as f:
+    with open('pareto_rev1.txt', 'w') as f:
         for elem in table:
             f.write("{},{} \n".format(elem[0], elem[1]))
     print(table)

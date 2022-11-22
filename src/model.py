@@ -68,7 +68,7 @@ class TEAM35Model(BaseModel):
         femm_metadata.file_script_name = self.file_solver_script
         femm_metadata.file_metrics_name = self.file_solution
         femm_metadata.unit = "meters"
-        femm_metadata.smartmesh = True
+        femm_metadata.smartmesh = False
 
         agros_metadata = Agros2DMetadata()
         agros_metadata.file_script_name = self.file_solver_script
@@ -83,7 +83,7 @@ class TEAM35Model(BaseModel):
         agros_metadata.adaptivity_tol = 0.001
 
         self.platform = Femm(femm_metadata)
-        # self.platform = Agros2D(agros_metadata)
+        #self.platform = Agros2D(agros_metadata)
         self.snapshot = Snapshot(self.platform)
 
     def define_boundary_conditions(self):
@@ -161,4 +161,4 @@ if __name__ == "__main__":
             Turn(current=3.0, r_0=xi * 1e-3, z_0=i * 1.5 * 1e-3, width=1.0 * 1e-3, height=1.5 * 1e-3))
 
     m = TEAM35Model(turns=coil_turns)
-    m(cleanup=False, devmode=True)
+    m(cleanup=True, devmode=True)
